@@ -1,0 +1,5 @@
+{
+  "name"    : "atom-shell-auto-update-demo",
+  "version" : "0.0.1",
+  "main"    : "main.js"
+}
