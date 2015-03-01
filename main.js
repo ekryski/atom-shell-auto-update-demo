@@ -7,7 +7,6 @@ var BrowserWindow = require('browser-window');  // Module to create native brows
 
 app.on('ready', function() {
     mainWindow = new BrowserWindow({width: 800, height: 600});
-    mainWindow.openDevTools()
     mainWindow.loadUrl('file://' + __dirname + '/index.html');
 });
 
