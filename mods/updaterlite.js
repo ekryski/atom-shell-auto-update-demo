@@ -1,11 +1,10 @@
 var UPDATER = (function(my) {
-    var gui = require('nw.gui');
-    var win = gui.Window.get();
-
     var fs = require("fs")
     var path = require("path")
+    var remote = require("remote")
 
     var pathtoserver = "http://localhost:44444" // replace with path to your express server of course
+    //var pathtoserver = "https://obscure-forest-8712.herokuapp.com"
 
     // to determine where our app.asar lies we need a bit of trickery (for OSX at least)
     var findlocal = function() {
@@ -20,10 +19,11 @@ var UPDATER = (function(my) {
     my.update = function(author,repo) {
         try {
             var xhreq = new XMLHttpRequest();
-            xhreq.open("GET", pathtoserver + "/getupdate?author=" + author + "&repo=" + repo + "&tag=" + (localStorage.UPDATERversion||""), true);
+            xhreq.open("GET", pathtoserver + "/updater?author=" + author + "&repo=" + repo + "&tag=" + (localStorage.UPDATERversion||""), true);
             xhreq.responseType = "arraybuffer";
             xhreq.onload = function (oEvent) {
                 var arrayBuffer = xhreq.response;
+                console.log(xhreq.getAllResponseHeaders())
                 var newvers = xhreq.getAllResponseHeaders().match(/app\.asar\.([^\"]+)"/)
                 if (arrayBuffer.byteLength && newvers && newvers.length) {
                     localStorage.UPDATERversion = newvers[1]
@@ -54,9 +54,9 @@ var UPDATER = (function(my) {
 
     my.restart = function() {
         var child_process = require("child_process");
-        var child = child_process.spawn(app.getPath("exe"), [], {detached: true});
+        var child = child_process.spawn(remote.require("app").getPath("exe"), [], {detached: true});
         child.unref();
-        win.close()
+        remote.getCurrentWindow().close()
     }
 
     return my
